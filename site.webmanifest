@@ -1,0 +1,8 @@
+{
+  "name": "The American Over",
+  "short_name": "American Over",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#fbfaf7"
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 64" role="img" aria-labelledby="title desc">
+  <title id="title">The American Over</title>
+  <desc id="desc">Red, white, and blue cricket stumps with a starred cricket ball</desc>
+  <path fill="#14253e" d="M7 6h22v7H7z"/>
+  <path fill="#d74848" d="M33 6h22v7H33zM10 17h10v41H10z"/>
+  <path fill="#fff" stroke="#14253e" stroke-width="2" d="M27 17h10v41H27z"/>
+  <path fill="#14253e" d="M44 17h10v41H44z"/>
+  <circle cx="67" cy="27" r="10" fill="#d74848"/>
+  <path fill="#fff" d="M67 20.5l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z"/>
+</svg>
