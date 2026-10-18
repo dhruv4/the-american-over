@@ -47,6 +47,13 @@ footer {
   position: sticky;
   top: 0;
   z-index: 10;
+  isolation: isolate;
+}
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - 50vw);
+  z-index: -1;
   border-bottom: 1px solid var(--ink);
   background: rgba(244, 246, 249, .94);
   backdrop-filter: blur(16px);
