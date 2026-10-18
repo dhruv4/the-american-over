@@ -32,14 +32,43 @@ def safe_episode_url(value: str) -> str:
     return value
 
 
-def episode_number(item: ET.Element, title: str) -> int:
+def episode_number(item: ET.Element, title: str) -> int | None:
     explicit = text(item, f"{ITUNES}episode")
     if explicit.isdigit():
         return int(explicit)
     match = re.match(r"\s*Episode\s+(\d+)\s*[:\-]?\s*", title, re.IGNORECASE)
-    if not match:
-        raise ValueError(f"Could not find an episode number in {title!r}")
-    return int(match.group(1))
+    return int(match.group(1)) if match else None
+
+
+def infer_episode_numbers(episodes: list[dict[str, object]]) -> None:
+    """Fill missing episode numbers from neighboring numbered episodes."""
+    known = [
+        (index, int(episode["number"]))
+        for index, episode in enumerate(episodes)
+        if episode["number"] is not None
+    ]
+    if not known:
+        for index, episode in enumerate(episodes):
+            episode["number"] = len(episodes) - index
+        return
+
+    for index, episode in enumerate(episodes):
+        if episode["number"] is not None:
+            continue
+        newer = next(((i, number) for i, number in reversed(known) if i < index), None)
+        older = next(((i, number) for i, number in known if i > index), None)
+        candidates = []
+        if newer:
+            candidates.append(newer[1] - (index - newer[0]))
+        if older:
+            candidates.append(older[1] + (older[0] - index))
+        if len(set(candidates)) > 1:
+            raise ValueError("Neighboring episode numbers disagree with the RSS feed order")
+        episode["number"] = candidates[0] if candidates else len(episodes) - index
+
+    numbers = [int(episode["number"]) for episode in episodes]
+    if any(number < 1 for number in numbers) or len(numbers) != len(set(numbers)):
+        raise ValueError("Could not infer a unique positive number for every episode")
 
 
 def clean_title(title: str) -> str:
@@ -102,6 +131,7 @@ def parse_feed() -> list[dict[str, object]]:
     if not episodes:
         raise ValueError("The RSS feed did not contain any episodes")
     episodes.sort(key=lambda episode: float(episode["timestamp"]), reverse=True)
+    infer_episode_numbers(episodes)
     return episodes
 
 
